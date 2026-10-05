@@ -1,36 +1,42 @@
 from fastapi import FastAPI
 import random
 
-app = FastAPI()
 
-tasks = []
+app = FastAPI()
+tasks=[]
 
 @app.get("/")
-def read_get():
-    return {"message" : "hello from python fastapi"} 
+def read():
+    return {"message": "Welcome to my server!"}
 
 @app.get("/api/tasks")
-def get_tasks():
-    return{"total":len(tasks), "tasks": tasks}
+def get():
+    return{"total": len(tasks), "tasks": tasks}
 
-@app.post("/api/tasks")
-def post_task(task : dict):
+@app.put("/api/tasks")
+def put(task: dict):
     task["id"] = random.randint(1000,9999)
-    tasks.append(task)
-    return{"message": "task successfully added", "task": task}
+    return{"message": "task added", "task": task}
 
-@app.put("/api/tasks/{task_id}")
-def update_task(task_id: int, updated_task: dict):
+@app.update("/api/tasks/{task_id}")
+def update(task_id: int, updated_task: dict):
     for task in tasks:
         if task["id"] == task_id:
             task.update(updated_task)
             task["id"] = task_id
-            return{"message": f"the task {task_id} has been updated", "task": task}
-        return{"error": "task not found"}
-    
-@app.delete("/api/tasks/{task_id}")
-def delete_task(task_id: int):
-    global tasks
-    tasks = [t for t in tasks if t["id"] != task_id]
+         
+            return{"message": f"Task {task_id} updated", "task": task}
+        
+        return{"message": "task not found"}
 
-    return{"message": f"task {task_id} deleted"}
+
+@app.delete("/api/tasks/{task_id}")
+def delete_ele(task_id:int):
+    global tasks
+
+    tasks = [ t for t in tasks if t["id"]!=task_id]
+    return {"message": f"Task{task_id} deleted"}
+
+    
+
+
